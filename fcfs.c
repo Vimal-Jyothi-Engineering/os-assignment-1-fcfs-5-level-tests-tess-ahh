@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 struct Process {
     int pid;
@@ -16,12 +15,10 @@ int main() {
     struct Process p[n];
 
     for (int i = 0; i < n; i++) {
-        char pname[10];
-        scanf("%s %d %d", pname, &p[i].arrival, &p[i].burst);
-        p[i].pid = atoi(pname + 1);   // Convert P1 → 1
+        scanf("%d %d %d", &p[i].pid, &p[i].arrival, &p[i].burst);
     }
 
-    // Sort by arrival time
+    // Sort by Arrival Time (FCFS)
     for (int i = 0; i < n - 1; i++) {
         for (int j = i + 1; j < n; j++) {
             if (p[i].arrival > p[j].arrival) {
@@ -33,7 +30,7 @@ int main() {
     }
 
     int current_time = 0;
-    double total_wt = 0, total_tat = 0;
+    float total_wt = 0, total_tat = 0;
 
     for (int i = 0; i < n; i++) {
         if (current_time < p[i].arrival)
@@ -48,14 +45,16 @@ int main() {
         total_tat += p[i].turnaround;
     }
 
-    // EXACT output format (single line)
+    // Output exactly as shown in the requirement
     printf("Waiting Time: ");
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < n; i++) {
         printf("P%d %d ", p[i].pid, p[i].waiting);
+    }
 
     printf("Turnaround Time: ");
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < n; i++) {
         printf("P%d %d ", p[i].pid, p[i].turnaround);
+    }
 
     printf("Average Waiting Time: %.2f ", total_wt / n);
     printf("Average Turnaround Time: %.2f", total_tat / n);
