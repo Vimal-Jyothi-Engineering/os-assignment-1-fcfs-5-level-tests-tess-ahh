@@ -1,7 +1,8 @@
 #include <stdio.h>
+#include <string.h>
 
 struct Process {
-    int pid;
+    char pid[10];  // Changed to string to handle "P1", "P2", etc.
     int arrival;
     int burst;
     int waiting;
@@ -15,7 +16,7 @@ int main() {
     struct Process p[n];
 
     for (int i = 0; i < n; i++) {
-        scanf("%d %d %d", &p[i].pid, &p[i].arrival, &p[i].burst);
+        scanf("%s %d %d", p[i].pid, &p[i].arrival, &p[i].burst);
     }
 
     /* Sort by Arrival Time (FCFS) */
@@ -48,16 +49,16 @@ int main() {
     /* Output in EXACT required format */
     printf("Waiting Time: ");
     for (int i = 0; i < n; i++) {
-        printf("P%d %d ", p[i].pid, p[i].waiting);
+        printf("%s %d ", p[i].pid, p[i].waiting);
     }
 
-    printf("\nTurnaround Time: ");
+    printf("Turnaround Time: ");  // Removed the \n here
     for (int i = 0; i < n; i++) {
-        printf("P%d %d ", p[i].pid, p[i].turnaround);
+        printf("%s %d ", p[i].pid, p[i].turnaround);
     }
 
-    printf("\nAverage Waiting Time: %.2f", total_wt / n);
-    printf("\nAverage Turnaround Time: %.2f", total_tat / n);
+    printf("Average Waiting Time: %.2f ", total_wt / n);  // Added space at the end
+    printf("Average Turnaround Time: %.2f", total_tat / n);
 
     return 0;
 }
