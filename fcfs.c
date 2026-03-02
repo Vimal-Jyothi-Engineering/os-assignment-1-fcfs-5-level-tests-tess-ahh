@@ -3,8 +3,8 @@
 #include <stdlib.h>
 
 struct Process {
-    char pid_str[10];  // Original PID string (e.g., "P1")
-    int pid_num;       // Numeric PID for output (e.g., 1)
+    char pid_str[10];
+    int pid_num;
     int arrival;
     int burst;
     int waiting;
@@ -22,27 +22,22 @@ int main() {
     for (int i = 0; i < n; i++) {
         scanf("%s %d %d", pname, &p[i].arrival, &p[i].burst);
         strcpy(p[i].pid_str, pname);
-        p[i].pid_num = atoi(pname + 1);  // Extract number from "P1", "P2", etc.
+        p[i].pid_num = atoi(pname + 1);
     }
     
-    // Check if input is already sorted by arrival time (from code 1)
-    int already_sorted = 1;
+    // Sort by Arrival Time (FCFS)
     for (int i = 0; i < n - 1; i++) {
-        if (p[i].arrival > p[i + 1].arrival) {
-            already_sorted = 0;
-            break;
-        }
-    }
-    
-    // Sort by Arrival Time if not already sorted
-    if (!already_sorted) {
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - i - 1; j++) {
-                if (p[j].arrival > p[j + 1].arrival) {
-                    struct Process temp = p[j];
-                    p[j] = p[j + 1];
-                    p[j + 1] = temp;
-                }
+        for (int j = i + 1; j < n; j++) {
+            if (p[i].arrival > p[j].arrival) {
+                struct Process temp = p[i];
+                p[i] = p[j];
+                p[j] = temp;
+            }
+            // If arrival times are equal, maintain original order (stable sort)
+            else if (p[i].arrival == p[j].arrival && p[i].pid_num > p[j].pid_num) {
+                struct Process temp = p[i];
+                p[i] = p[j];
+                p[j] = temp;
             }
         }
     }
@@ -52,20 +47,25 @@ int main() {
     
     // Calculate waiting and turnaround times
     for (int i = 0; i < n; i++) {
+        // If current time is less than arrival time, CPU was idle
         if (current_time < p[i].arrival) {
             current_time = p[i].arrival;
         }
         
+        // Waiting time = current time - arrival time
         p[i].waiting = current_time - p[i].arrival;
+        
+        // Turnaround time = waiting time + burst time
         p[i].turnaround = p[i].waiting + p[i].burst;
         
+        // Update current time
         current_time += p[i].burst;
         
         total_wt += p[i].waiting;
         total_tat += p[i].turnaround;
     }
     
-    // Output format from code 1 (using P%d for PID numbers)
+    // Output in the exact format
     printf("Waiting Time:\n");
     for (int i = 0; i < n; i++) {
         printf("P%d %d\n", p[i].pid_num, p[i].waiting);
